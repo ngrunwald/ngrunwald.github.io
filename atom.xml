@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[The Blank Screen]]></title>
+  <link href="http://ngrunwald.github.com/atom.xml" rel="self"/>
+  <link href="http://ngrunwald.github.com/"/>
+  <updated>2013-02-18T19:04:13+01:00</updated>
+  <id>http://ngrunwald.github.com/</id>
+  <author>
+    <name><![CDATA[Nils Grunwald]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing Gavagai]]></title>
+    <link href="http://ngrunwald.github.com/blog/2013/02/18/introducing-gavagai/"/>
+    <updated>2013-02-18T19:00:00+01:00</updated>
+    <id>http://ngrunwald.github.com/blog/2013/02/18/introducing-gavagai</id>
+    <content type="html"><![CDATA[<p>This is the story of two countries. One of them, Clojureland, is newly
+founded. It has a very egalitarian society, everyboby is willing to
+talk to you casually and answer your questions in the same way,
+regardless of his job or status. The other country, Javaland, has a
+rigid class system, and an intricate system of courtesy. In order to
+ask a question to anyone and have him answer with some info or data,
+you need to know to which of many classes he belongs to. You also need
+to know who his ancestors are and what classes <em>they</em> belong to. If
+you do not talk to him in the specific way he expects, he will not
+answer you at all.</p>
+
+<p>And so it is that when young students from the new land travel to see
+the old masters to get their wisdom, they get bored and irrate quite
+quickly. They say, &#8220;Why should I care if the old schmuck wants to call
+his method <em>getName</em> or <em>getLabel</em>? And why can&#8217;t I ask him directly
+about the names?&#8221; And they go back to their land and try to reinvent
+the wisdom of their forebearers in their own data-driven way. Which is
+not bad, but probably not the fastest path to progress either.</p>
+
+<p><img class="right" src="http://ngrunwald.github.com/images/white_rabbit.jpg" width="320" height="214" title="Gavagai" >
+But there is another way. What the students need is a way to ask old
+masters questions in their own way. What they need is a <em>translator</em>.
+Let me introduce you to it. Its name is
+<a href="https://github.com/ngrunwald/gavagai">gavagai</a> and it is a cute white
+rabbit. It is also a parable about the
+<a href="http://en.wikipedia.org/wiki/Indeterminacy_of_translation">indeterminacy of translation</a>.
+It acts as a translation dictionary, and helps you get your data out
+of Javaland.</p>
+
+<p>Let&#8217;s take an exemple. Let&#8217;s say you want to parse a RSS feed. It is
+only XML, so theoretically you can easily parse it directly in
+Clojure. But in fact they are many formats (RSS 0.9, RSS 2.0, Atom,
+etc.). Also, the Web is a wild place, and you get all sort of junk
+and malformed fields you have to account for in your parsing. All in
+all, this is dreary work, and you soon hope someone else had done it
+for you.</p>
+
+<p>Well someone has. <a href="http://rometools.org/">ROME</a> can parse most of what
+you can throw at it. Let&#8217;s see how we can go about getting all the
+post titles and dates in a feed.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(use 'gavagai.core)
+</span><span class='line'>(require 'clojure.java.io :as io)
+</span><span class='line'>(import 'com.sun.syndication.io.SyndFeedInput)
+</span><span class='line'>
+</span><span class='line'> (let [reader (io/reader arg)
+</span><span class='line'>      feed (.build (SyndFeedInput.) reader)
+</span><span class='line'>      entries (.getEntries feed)]
+</span><span class='line'>  (map #(array-map :title (.getTitle %)
+</span><span class='line'>                   :published-date (.getPublishedDate %))
+</span><span class='line'>       entries))</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Not bad, but notice how verbose it would become rather cumbersome if
+we wanted more keys. We have a great function to do this,
+<code>select-keys</code>, but we need a Clojure data structuire to use it on.
+That&#8217;s where gavagai comes in.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(def feed-translator
+</span><span class='line'>  (gav/register-converters
+</span><span class='line'>   [["com.sun.syndication.feed.synd.SyndFeedImpl"]
+</span><span class='line'>    ["com.sun.syndication.feed.synd.SyndEntryImpl"]]))
+</span><span class='line'>
+</span><span class='line'>(let [reader (io/reader arg)
+</span><span class='line'>      feed (translate feed-translator (.build (SyndFeedInput.) reader))]
+</span><span class='line'>  (map #(select-keys % [:title :published-date]) (:entries feed)))</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That&#8217;s much better and easy to read. And that&#8217;s how gavagai works in a
+nutshell. You define a translator by registering the class names
+you&#8217;re interested in with <code>register-converters</code>, then you call
+<code>translate</code> with it and an object, and you get back a translated
+Clojure data structure. It acts a bit like the core function <code>bean</code>.
+But it is recursive, configurable, and faster because most
+reflection happens only once when registering the classes in the
+translator. It is also quite easy to use from the REPL, which makes it
+great to explore big Java APIs.</p>
+
+<p>So, I invite you to look at the README of
+<a href="https://github.com/ngrunwald/gavagai">gavagai</a> for further details.
+There are a lot of options. You can also look at the tests for more examples.</p>
+
+<p>And if you need to parse some feed and you wonder if this exemple has
+been turned into a true wrapper, the answer is yes. It&#8217;s called
+<a href="https://github.com/ngrunwald/clj-rome">clj-rome</a> and it is only 60
+lines long thanks to gavagai. This code is a good exemple of real
+production usage of gavagai.</p>
+]]></content>
+  </entry>
+  
+</feed>
