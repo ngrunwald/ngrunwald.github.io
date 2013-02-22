@@ -4,7 +4,7 @@
   <title><![CDATA[The Blank Screen]]></title>
   <link href="http://ngrunwald.github.com/atom.xml" rel="self"/>
   <link href="http://ngrunwald.github.com/"/>
-  <updated>2013-02-18T19:04:13+01:00</updated>
+  <updated>2013-02-22T16:31:20+01:00</updated>
   <id>http://ngrunwald.github.com/</id>
   <author>
     <name><![CDATA[Nils Grunwald]]></name>
@@ -12,6 +12,72 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[First public release of clj-elasticsearch]]></title>
+    <link href="http://ngrunwald.github.com/blog/2013/02/22/first-public-release-of-clj-elasticsearch/"/>
+    <updated>2013-02-22T15:55:00+01:00</updated>
+    <id>http://ngrunwald.github.com/blog/2013/02/22/first-public-release-of-clj-elasticsearch</id>
+    <content type="html"><![CDATA[<p>I&#8217;m happy to announce the first public release of
+<a href="http://ngrunwald.github.com/clj-elasticsearch">clj-elasticsearch</a>, a
+Clojure wrapper for <a href="http://www.elasticsearch.org/">Elasticsearch</a>, the
+distributed and easy to use search engine that probably needs no
+introducing anymore. It exposes a very nicely done REST interface
+which is the preferred way in most programming languages to access it.
+<a href="https://github.com/clojurewerkz/elastisch">Elastisch</a> is a nice
+exemple of such a REST client in Clojure.<br/>
+However Elasticsearch can also be accessed through its native Java
+library. It is not what could properly be called a client library, as
+it used the same code and Maven artifact as the server itself. You can
+communicate with the cluster of Elasticsearch nodes with the same
+protocol they use internally. This may be somewhat faster and also
+allows your client to use the same mechanisms of failover the cluster
+uses. Even better, if you do not need distribution, you can embed the
+node directly inside your app, to simplify deployment and
+administration, and configuration.<br/>
+The Elasticsearch library is very extensive, a bit hard to navigate
+(identifying the classes that are of interest for a client is not
+always easy), and uses specific objects for everything. To build an
+idiomatic Clojure wrapper above it, I took the path of using
+compile-time reflection to generate as statically as possible the
+Clojure functions needed to use the API.<br/>
+Some of the benefits this approach has allowed are:</p>
+
+<ul>
+<li>The information gained from performing reflection on the Java
+classes allows to generate
+<a href="http://ngrunwald.github.com/clj-elasticsearch">docstrings</a> that
+are detailed, up-to-date and always correspond exactly to the
+version of the elasticsearch lib used by the code.</li>
+<li>Code that is more succint, and easier to test</li>
+<li>It is reasonably fast. Some hasty and limited benchmark
+<a href="https://github.com/ngrunwald/elasticsearch-bench">here</a> seems to
+suggest clj-elasticsearch is about 5 times faster than the REST
+API (with
+<a href="https://github.com/clojurewerkz/elastisch">Elastisch</a>)</li>
+<li>You can use the lib in both sync and async style, and you can use
+async both through clojure-style Futures and callback passing,
+simply by using Elasticsearch native support for asynchronous
+operations. This allows even more performance gains.</li>
+<li>Even though the Java API has seen some important class changes,
+clj-elasticsearch can use compile time reflection to provide a
+consistent Clojure API that is compatible with every Elasticsearch
+version since <strong>0.19.0</strong> up to now</li>
+</ul>
+
+
+<p>I invite you to look at the
+<a href="https://github.com/ngrunwald/clj-elasticsearch">project</a> itself, the
+extensive <a href="http://ngrunwald.github.com/clj-elasticsearch">docstrings</a>
+and the
+<a href="https://github.com/ngrunwald/clj-elasticsearch/blob/master/test/clj_elasticsearch/test/client.clj">tests</a>
+to explore clj-elasticsearch API. This library has been partly written
+at <a href="http://us.linkfluence.net/">Linkfluence</a> and has seen over a year
+of intensive production usage here, but of course we do not use every
+function of Elasticsearch rich API, so bug reports and patches are
+very welcome.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Introducing Gavagai]]></title>

@@ -5,8 +5,14 @@
         <lastmod>2013-02-18T17:39:27+01:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://ngrunwald.github.com/blog/2013/02/22/first-public-release-of-clj-elasticsearch/
+        </loc>
+        <lastmod>2013-02-22T16:27:26+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://ngrunwald.github.com/blog/archives/</loc>
-        <lastmod>2013-02-18T17:39:27+01:00</lastmod>
+        <lastmod>2013-02-22T16:27:26+01:00</lastmod>
     </url>
     <url>
         <loc>http://ngrunwald.github.com/robots.txt</loc>
@@ -14,7 +20,7 @@
     </url>
     <url>
         <loc>http://ngrunwald.github.com/</loc>
-        <lastmod>2013-02-18T17:39:27+01:00</lastmod>
+        <lastmod>2013-02-22T16:27:26+01:00</lastmod>
     </url>
     <url>
         <loc>http://ngrunwald.github.com/talks/</loc>

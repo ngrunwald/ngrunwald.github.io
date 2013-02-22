@@ -5,13 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - The Blank Screen</title>
+  <title>First public release of clj-elasticsearch - The Blank Screen</title>
   <meta name="author" content="Nils Grunwald">
 
   
-  <meta name="description" content="Blog Archive 2013 First public release of clj-elasticsearch
-Feb 22 2013 posted in clojure Introducing Gavagai
-Feb 18 2013 posted in clojure Bio This &hellip;">
+  <meta name="description" content="I&#8217;m happy to announce the first public release of
+clj-elasticsearch, a
+Clojure wrapper for Elasticsearch, the
+distributed and easy to use &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +21,7 @@ Feb 18 2013 posted in clojure Bio This &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ngrunwald.github.com/blog/archives/">
+  <link rel="canonical" href="http://ngrunwald.github.com/blog/2013/02/22/first-public-release-of-clj-elasticsearch/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -78,50 +79,154 @@ Feb 18 2013 posted in clojure Bio This &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">First Public Release of Clj-elasticsearch</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-22T15:55:00+01:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>I&#8217;m happy to announce the first public release of
+<a href="http://ngrunwald.github.com/clj-elasticsearch">clj-elasticsearch</a>, a
+Clojure wrapper for <a href="http://www.elasticsearch.org/">Elasticsearch</a>, the
+distributed and easy to use search engine that probably needs no
+introducing anymore. It exposes a very nicely done REST interface
+which is the preferred way in most programming languages to access it.
+<a href="https://github.com/clojurewerkz/elastisch">Elastisch</a> is a nice
+exemple of such a REST client in Clojure.<br/>
+However Elasticsearch can also be accessed through its native Java
+library. It is not what could properly be called a client library, as
+it used the same code and Maven artifact as the server itself. You can
+communicate with the cluster of Elasticsearch nodes with the same
+protocol they use internally. This may be somewhat faster and also
+allows your client to use the same mechanisms of failover the cluster
+uses. Even better, if you do not need distribution, you can embed the
+node directly inside your app, to simplify deployment and
+administration, and configuration.<br/>
+The Elasticsearch library is very extensive, a bit hard to navigate
+(identifying the classes that are of interest for a client is not
+always easy), and uses specific objects for everything. To build an
+idiomatic Clojure wrapper above it, I took the path of using
+compile-time reflection to generate as statically as possible the
+Clojure functions needed to use the API.<br/>
+Some of the benefits this approach has allowed are:</p>
 
-  
-  <h2>2013</h2>
-
-<article>
-  
-<h1><a href="/blog/2013/02/22/first-public-release-of-clj-elasticsearch/">First public release of clj-elasticsearch</a></h1>
-<time datetime="2013-02-22T15:55:00+01:00" pubdate><span class='month'>Feb</span> <span class='day'>22</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/clojure/'>clojure</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2013/02/18/introducing-gavagai/">Introducing Gavagai</a></h1>
-<time datetime="2013-02-18T19:00:00+01:00" pubdate><span class='month'>Feb</span> <span class='day'>18</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/clojure/'>clojure</a></span>
-</footer>
+<ul>
+<li>The information gained from performing reflection on the Java
+classes allows to generate
+<a href="http://ngrunwald.github.com/clj-elasticsearch">docstrings</a> that
+are detailed, up-to-date and always correspond exactly to the
+version of the elasticsearch lib used by the code.</li>
+<li>Code that is more succint, and easier to test</li>
+<li>It is reasonably fast. Some hasty and limited benchmark
+<a href="https://github.com/ngrunwald/elasticsearch-bench">here</a> seems to
+suggest clj-elasticsearch is about 5 times faster than the REST
+API (with
+<a href="https://github.com/clojurewerkz/elastisch">Elastisch</a>)</li>
+<li>You can use the lib in both sync and async style, and you can use
+async both through clojure-style Futures and callback passing,
+simply by using Elasticsearch native support for asynchronous
+operations. This allows even more performance gains.</li>
+<li>Even though the Java API has seen some important class changes,
+clj-elasticsearch can use compile time reflection to provide a
+consistent Clojure API that is compatible with every Elasticsearch
+version since <strong>0.19.0</strong> up to now</li>
+</ul>
 
 
-</article>
-
+<p>I invite you to look at the
+<a href="https://github.com/ngrunwald/clj-elasticsearch">project</a> itself, the
+extensive <a href="http://ngrunwald.github.com/clj-elasticsearch">docstrings</a>
+and the
+<a href="https://github.com/ngrunwald/clj-elasticsearch/blob/master/test/clj_elasticsearch/test/client.clj">tests</a>
+to explore clj-elasticsearch API. This library has been partly written
+at <a href="http://us.linkfluence.net/">Linkfluence</a> and has seen over a year
+of intensive production usage here, but of course we do not use every
+function of Elasticsearch rich API, so bug reports and patches are
+very welcome.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Nils Grunwald</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-22T15:55:00+01:00" pubdate data-updated="true">Feb 22<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/clojure/'>clojure</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ngrunwald.github.com/blog/2013/02/22/first-public-release-of-clj-elasticsearch/" data-via="nilsgrunwald" data-counturl="http://ngrunwald.github.com/blog/2013/02/22/first-public-release-of-clj-elasticsearch/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/18/introducing-gavagai/" title="Previous Post: Introducing Gavagai">&laquo; Introducing Gavagai</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -224,7 +329,10 @@ Feb 18 2013 posted in clojure Bio This &hellip;">
       var disqus_shortname = 'theblankscreen';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ngrunwald.github.com/blog/2013/02/22/first-public-release-of-clj-elasticsearch/';
+        var disqus_url = 'http://ngrunwald.github.com/blog/2013/02/22/first-public-release-of-clj-elasticsearch/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
